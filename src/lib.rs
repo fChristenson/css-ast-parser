@@ -26,10 +26,6 @@ pub fn scan(src: &String) -> Result<Vec<Token>, Error> {
             result.push(Token::Colon);
             buffer.clear();
         } else if character == ';' {
-            println!(
-                "FOO {:?}",
-                Token::Value(buffer.trim_end().trim_start().to_string())
-            );
             result.push(Token::Value(buffer.trim_end().trim_start().to_string()));
             result.push(Token::SemiColon);
             buffer.clear();
