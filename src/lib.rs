@@ -2,6 +2,7 @@
 pub enum Token {
     Id(String),
     Class(String),
+    Tag(String),
     Property(String),
     Value(String),
     Colon,
@@ -124,6 +125,7 @@ mod tests {
     #[test]
     fn scan_test2() {
         let expected_tokens = vec![
+            // .foo
             Token::Class(String::from("foo")),
             Token::OpenCurlyBrace,
             Token::Property(String::from("color")),
@@ -131,6 +133,7 @@ mod tests {
             Token::Value(String::from("red")),
             Token::SemiColon,
             Token::ClosingCurlyBrace,
+            // #bar
             Token::Id(String::from("bar")),
             Token::OpenCurlyBrace,
             Token::Property(String::from("color")),
@@ -140,6 +143,14 @@ mod tests {
             Token::Property(String::from("white-space")),
             Token::Colon,
             Token::Value(String::from("nowrap")),
+            Token::SemiColon,
+            Token::ClosingCurlyBrace,
+            // h1
+            Token::Tag(String::from("h1")),
+            Token::OpenCurlyBrace,
+            Token::Property(String::from("padding")),
+            Token::Colon,
+            Token::Value(String::from("8px 8px")),
             Token::SemiColon,
             Token::ClosingCurlyBrace,
         ];

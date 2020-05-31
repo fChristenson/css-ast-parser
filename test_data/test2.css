@@ -6,3 +6,7 @@
   color: green;
   white-space: nowrap;
 }
+
+h1 {
+  padding: 8px 8px;
+}
