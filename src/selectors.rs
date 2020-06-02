@@ -4,7 +4,8 @@ pub fn is_selector_delimiter(character: &char) -> bool {
     SELECTOR_DELIMITERS.contains(character) || character.is_whitespace()
 }
 
-mod test {
+#[cfg(test)]
+mod tests {
     use super::*;
     #[test]
     fn is_selector_delimiter_test() {

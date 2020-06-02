@@ -11,10 +11,7 @@ pub fn char_to_token(character: &char) -> Option<Token> {
         &':' => Some(Token::Colon),
         &';' => Some(Token::SemiColon),
         &',' => Some(Token::Comma),
-        _ => {
-            println!("{} could not be tokenized", character);
-            None
-        }
+        _ => None,
     }
 }
 
