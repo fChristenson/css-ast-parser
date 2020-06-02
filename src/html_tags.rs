@@ -1,4 +1,23 @@
-pub const HTML_TAGS: [&str; 130] = [
+use crate::tokens::Token;
+
+pub fn parse_html_tag(characters: &[char]) -> Option<Token> {
+    for tag in HTML_TAGS {
+        if tag == characters {
+            return Token::Tag(tag);
+        }
+    }
+
+    None
+}
+
+#[cfg(test)]
+mod test {
+    fn parse_html_tag_test() {
+        assert_eq!(parse_html_tag(['a'], Token::Tag("a".to_string())))
+    }
+}
+
+const HTML_TAGS: [&str; 130] = [
     "!--...--",
     "!DOCTYPE",
     "a",
