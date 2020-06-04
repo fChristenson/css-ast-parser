@@ -1,4 +1,4 @@
-const SELECTOR_DELIMITERS: [char; 7] = ['.', '#', '>', '+', '~', ' ', '{'];
+const SELECTOR_DELIMITERS: [char; 6] = ['.', '#', '>', '+', '~', '{'];
 
 pub fn is_selector_delimiter(character: &char) -> bool {
     SELECTOR_DELIMITERS.contains(character) || character.is_whitespace()

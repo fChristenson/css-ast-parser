@@ -1,11 +1,11 @@
-#[derive(Debug, PartialEq)]
-pub enum Token {
-    Operator(String),
-    Id(String),
-    Class(String),
-    Tag(String),
-    Property(String),
-    Value(String),
+#[derive(Debug, PartialEq, Copy, Clone)]
+pub enum Token<'a> {
+    Operator(&'a str),
+    Id(&'a str),
+    Class(&'a str),
+    Tag(&'a str),
+    Property(&'a str),
+    Value(&'a str),
     Colon,
     Comma,
     SemiColon,
@@ -13,6 +13,8 @@ pub enum Token {
     Newline,
     Tab,
     Return,
+    OpenBrace,
+    ClosingBrace,
     OpenCurlyBrace,
     ClosingCurlyBrace,
     Eof,
