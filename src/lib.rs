@@ -234,4 +234,20 @@ mod tests {
         ];
         assert_eq!(scan(&css), expected)
     }
+
+    #[test]
+    fn scan_rules() {
+        let css = ".foo{color: red;}";
+        let expected = vec![
+            Token::Class(".foo"),
+            Token::OpenCurlyBrace,
+            Token::Rule("color"),
+            Token::Colon,
+            Token::Value("red"),
+            Token::SemiColon,
+            Token::ClosingCurlyBrace,
+            Token::Eof,
+        ];
+        assert_eq!(scan(&css), expected)
+    }
 }

@@ -4,7 +4,7 @@ pub enum Token<'a> {
     Id(&'a str),
     Class(&'a str),
     Tag(&'a str),
-    Property(&'a str),
+    Rule(&'a str),
     Value(&'a str),
     Colon,
     Comma,
