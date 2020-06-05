@@ -1,11 +1,16 @@
+mod add_class_tokens;
+mod add_html_tokens;
+mod add_id_tokens;
+mod add_rule_tokens;
+mod delimiters;
 mod selectors;
 mod tokens;
 
-use selectors::is_selector_delimiter;
-use std::collections::*;
-use std::iter::{Skip, SkipWhile};
-use std::str::CharIndices;
-use std::str::Chars;
+use add_class_tokens::add_class_token;
+use add_html_tokens::add_html_token;
+use add_id_tokens::add_id_token;
+use add_rule_tokens::add_rule_tokens;
+use delimiters::get_delimiters;
 use tokens::Token;
 
 pub fn scan<'a>(src: &'a str) -> Vec<Token> {
@@ -21,7 +26,11 @@ pub fn scan<'a>(src: &'a str) -> Vec<Token> {
             continue;
         }
 
-        if let Some(token) = delimiters.get(&c) {
+        if c == '{' {
+            tokens.push(Token::OpenCurlyBrace);
+            let offset = add_rule_tokens(index, &src, &mut tokens);
+            token_end = offset;
+        } else if let Some(token) = delimiters.get(&c) {
             token_end += 1;
             println!("ADDING CHAR {:?}", token);
             tokens.push(*token);
@@ -42,98 +51,6 @@ pub fn scan<'a>(src: &'a str) -> Vec<Token> {
 
     tokens.push(Token::Eof);
     tokens
-}
-
-fn add_html_token<'a>(index: usize, src: &'a str) -> (usize, Token<'a>) {
-    println!("HTML FOUND");
-    let first_letter = index + 1;
-    let mut iter2 = src.char_indices().skip(first_letter);
-    let mut delimiter_found = false;
-
-    while let Some((offset, c)) = iter2.next() {
-        if !is_selector_delimiter(&c) {
-            continue;
-        }
-
-        delimiter_found = true;
-        println!("ADDING HTML {} {}", index, offset);
-        return (offset, Token::Tag(&src[index..offset]));
-    }
-
-    if !delimiter_found {
-        let offset = src.len();
-        println!("NO DELIMITER ADDING HTML {} {}", index, offset);
-        return (offset, Token::Tag(&src[index..]));
-    }
-
-    panic!("Error parsing HTML")
-}
-
-fn add_class_token<'a>(index: usize, src: &'a str) -> (usize, Token<'a>) {
-    println!("CLASS FOUND");
-    let first_letter = index + 1;
-    let mut iter2 = src.char_indices().skip(first_letter);
-    let mut delimiter_found = false;
-
-    while let Some((offset, c)) = iter2.next() {
-        if !is_selector_delimiter(&c) {
-            continue;
-        }
-
-        delimiter_found = true;
-        println!("ADDING CLASS {} {}", index, offset);
-        return (offset, Token::Class(&src[index..offset]));
-    }
-
-    if !delimiter_found {
-        let offset = src.len();
-        println!("NO DELIMITER ADDING CLASS {} {}", index, offset);
-        return (offset, Token::Class(&src[index..]));
-    }
-
-    panic!("Error parsing class")
-}
-
-fn add_id_token<'a>(index: usize, src: &'a str) -> (usize, Token<'a>) {
-    println!("ID FOUND");
-    let first_letter = index + 1;
-    let mut iter2 = src.char_indices().skip(first_letter);
-    let mut delimiter_found = false;
-
-    while let Some((offset, c)) = iter2.next() {
-        if !is_selector_delimiter(&c) {
-            continue;
-        }
-
-        delimiter_found = true;
-        println!("ADDING ID {} {}", index, offset);
-        return (offset, Token::Id(&src[index..offset]));
-    }
-
-    if !delimiter_found {
-        let offset = src.len();
-        println!("NO DELIMITER ADDING ID {} {}", index, offset);
-        return (offset, Token::Id(&src[index..]));
-    }
-
-    panic!("Error parsing id")
-}
-
-fn get_delimiters<'a>() -> HashMap<char, Token<'a>> {
-    let mut map = HashMap::new();
-    map.insert('\n', Token::Newline);
-    map.insert('\r', Token::Return);
-    map.insert('\t', Token::Tab);
-    map.insert(' ', Token::Space);
-    map.insert('{', Token::OpenCurlyBrace);
-    map.insert('}', Token::ClosingCurlyBrace);
-    map.insert('[', Token::OpenBrace);
-    map.insert(']', Token::ClosingBrace);
-    map.insert(':', Token::Colon);
-    map.insert(';', Token::SemiColon);
-    map.insert(',', Token::Comma);
-
-    map
 }
 
 #[cfg(test)]
