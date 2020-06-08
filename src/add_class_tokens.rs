@@ -4,23 +4,17 @@ use crate::tokens::Token;
 pub fn add_class_token<'a>(index: usize, src: &'a str) -> (usize, Token<'a>) {
   let first_letter = index + 1;
   let mut iter2 = src.char_indices().skip(first_letter);
-  let mut delimiter_found = false;
 
   while let Some((offset, c)) = iter2.next() {
     if !is_selector_delimiter(&c) {
       continue;
     }
 
-    delimiter_found = true;
     return (offset, Token::Class(&src[index..offset]));
   }
 
-  if !delimiter_found {
-    let offset = src.len();
-    return (offset, Token::Class(&src[index..]));
-  }
-
-  panic!("Error parsing class")
+  let offset = src.len();
+  return (offset, Token::Class(&src[index..]));
 }
 
 #[cfg(test)]

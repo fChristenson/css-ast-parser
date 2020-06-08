@@ -19,4 +19,5 @@ pub enum Token<'a> {
     OpenCurlyBrace,
     ClosingCurlyBrace,
     Eof,
+    Unknown(&'a str),
 }

@@ -3,6 +3,7 @@ mod add_html_tokens;
 mod add_id_tokens;
 mod add_rule_tokens;
 mod delimiters;
+mod html_tags;
 mod selectors;
 mod tokens;
 
