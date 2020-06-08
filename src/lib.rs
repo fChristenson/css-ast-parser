@@ -134,4 +134,24 @@ mod tests {
         ];
         assert_eq!(scan(&css), expected)
     }
+
+    #[test]
+    fn scan_comment() {
+        let css = "/* comment */ .foo {color: red;}";
+        let expected = vec![
+            Token::Comment("/* comment */"),
+            Token::Space,
+            Token::Class(".foo"),
+            Token::Space,
+            Token::OpenCurlyBrace,
+            Token::Rule("color"),
+            Token::Colon,
+            Token::Space,
+            Token::Value("red"),
+            Token::SemiColon,
+            Token::ClosingCurlyBrace,
+            Token::Eof,
+        ];
+        assert_eq!(scan(&css), expected)
+    }
 }

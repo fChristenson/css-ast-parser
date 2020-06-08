@@ -6,6 +6,7 @@ pub enum Token<'a> {
     Tag(&'a str),
     Rule(&'a str),
     Value(&'a str),
+    Comment(&'a str),
     Colon,
     Comma,
     SemiColon,
