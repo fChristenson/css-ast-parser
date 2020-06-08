@@ -10,14 +10,14 @@ use add_class_tokens::add_class_token;
 use add_html_tokens::add_html_token;
 use add_id_tokens::add_id_token;
 use add_rule_tokens::add_rule_tokens;
-use delimiters::get_delimiters;
+use delimiters::get_delimiter_token;
 use tokens::Token;
 
 pub fn scan<'a>(src: &'a str) -> Vec<Token> {
-    let delimiters = get_delimiters();
     let mut iter = src.char_indices();
     let mut tokens: Vec<Token> = vec![];
     let mut token_end = 0;
+    let mut inside_block = false;
 
     while let Some((index, c)) = iter.next() {
         println!("ITER {} {} {}", index, token_end, c);
@@ -26,14 +26,15 @@ pub fn scan<'a>(src: &'a str) -> Vec<Token> {
             continue;
         }
 
-        if c == '{' {
+        if inside_block {
+            add_rule_tokens(index, &src, &mut tokens);
+            inside_block = false;
+        } else if c == '{' {
             tokens.push(Token::OpenCurlyBrace);
-            let offset = add_rule_tokens(index, &src, &mut tokens);
-            token_end = offset;
-        } else if let Some(token) = delimiters.get(&c) {
+            inside_block = true;
+        } else if let Some(token) = get_delimiter_token(c) {
             token_end += 1;
-            println!("ADDING CHAR {:?}", token);
-            tokens.push(*token);
+            tokens.push(token);
         } else if c == '.' {
             let (offset, token) = add_class_token(index, &src);
             token_end = offset;
@@ -56,36 +57,6 @@ pub fn scan<'a>(src: &'a str) -> Vec<Token> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn scan_test_all_delimiters() {
-        let mut css = String::new();
-        let iter = get_delimiters();
-        let mut keys = iter.keys();
-
-        while let Some(c) = keys.next() {
-            css.push(*c);
-        }
-
-        let expected = vec![
-            Token::OpenBrace,
-            Token::ClosingBrace,
-            Token::Colon,
-            Token::Tab,
-            Token::Comma,
-            Token::OpenCurlyBrace,
-            Token::SemiColon,
-            Token::Return,
-            Token::Newline,
-            Token::ClosingCurlyBrace,
-            Token::Space,
-            Token::Eof,
-        ];
-        let results = scan(&css);
-        for token in expected {
-            assert_eq!(results.contains(&token), true);
-        }
-    }
 
     #[test]
     fn scan_class_test() {
