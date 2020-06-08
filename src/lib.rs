@@ -20,9 +20,7 @@ pub fn scan<'a>(src: &'a str) -> Vec<Token> {
     let mut inside_block = false;
 
     while let Some((index, c)) = iter.next() {
-        println!("ITER {} {} {}", index, token_end, c);
         if index != token_end {
-            println!("CONTINUE {} {} {}", index, token_end, c);
             continue;
         }
 
