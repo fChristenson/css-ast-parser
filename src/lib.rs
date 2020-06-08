@@ -129,6 +129,7 @@ mod tests {
             Token::OpenCurlyBrace,
             Token::Rule("color"),
             Token::Colon,
+            Token::Space,
             Token::Value("red"),
             Token::SemiColon,
             Token::ClosingCurlyBrace,
