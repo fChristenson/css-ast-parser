@@ -1,4 +1,5 @@
 mod add_class_tokens;
+mod add_comment_tokens;
 mod add_html_tokens;
 mod add_id_tokens;
 mod add_rule_tokens;
@@ -8,6 +9,7 @@ mod selectors;
 mod tokens;
 
 use add_class_tokens::add_class_token;
+use add_comment_tokens::{add_comment_token, is_comment};
 use add_html_tokens::add_html_token;
 use add_id_tokens::add_id_token;
 use add_rule_tokens::add_rule_tokens;
@@ -24,7 +26,11 @@ pub fn scan<'a>(src: &'a str) -> Vec<Token> {
             continue;
         }
 
-        if c == '{' {
+        if c == '/' && is_comment(index, &src) {
+            let (offset, token) = add_comment_token(index, &src);
+            token_end = offset;
+            tokens.push(token);
+        } else if c == '{' {
             tokens.push(Token::OpenCurlyBrace);
             token_end = add_rule_tokens(index + 1, &src, &mut tokens);
         } else if let Some(token) = get_delimiter_token(c) {
