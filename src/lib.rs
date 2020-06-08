@@ -164,7 +164,7 @@ mod tests {
 
     #[test]
     fn scan_import() {
-        let css = "@import 'foo.css'";
+        let css = "@import 'foo.css';";
         let expected = vec![Token::Import(&css), Token::Eof];
         assert_eq!(scan(&css), expected)
     }
