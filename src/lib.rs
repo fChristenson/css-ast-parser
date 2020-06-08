@@ -17,19 +17,15 @@ pub fn scan<'a>(src: &'a str) -> Vec<Token> {
     let mut iter = src.char_indices();
     let mut tokens: Vec<Token> = vec![];
     let mut token_end = 0;
-    let mut inside_block = false;
 
     while let Some((index, c)) = iter.next() {
         if index != token_end {
             continue;
         }
 
-        if inside_block {
-            add_rule_tokens(index, &src, &mut tokens);
-            inside_block = false;
-        } else if c == '{' {
+        if c == '{' {
             tokens.push(Token::OpenCurlyBrace);
-            inside_block = true;
+            token_end = add_rule_tokens(index + 1, &src, &mut tokens);
         } else if let Some(token) = get_delimiter_token(c) {
             token_end += 1;
             tokens.push(token);
@@ -123,9 +119,10 @@ mod tests {
 
     #[test]
     fn scan_rules() {
-        let css = ".foo{color: red;}";
+        let css = ".foo {color: red;}";
         let expected = vec![
             Token::Class(".foo"),
+            Token::Space,
             Token::OpenCurlyBrace,
             Token::Rule("color"),
             Token::Colon,
