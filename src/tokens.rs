@@ -1,13 +1,11 @@
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub enum Token<'a> {
-    Operator(&'a str),
-    Id(&'a str),
-    Class(&'a str),
-    Tag(&'a str),
-    Rule(&'a str),
-    Value(&'a str),
-    Comment(&'a str),
-    Import(&'a str),
+    Ident(&'a str),
+    Star,
+    ForwardSlash,
+    BackwardSlash,
+    SingleQuote,
+    DoubleQuote,
     Colon,
     Comma,
     SemiColon,
@@ -20,5 +18,4 @@ pub enum Token<'a> {
     OpenCurlyBrace,
     ClosingCurlyBrace,
     Eof,
-    Unknown(&'a str),
 }
